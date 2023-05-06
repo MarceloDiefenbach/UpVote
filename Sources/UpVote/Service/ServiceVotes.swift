@@ -9,7 +9,7 @@ import Foundation
 
 public class ServiceVotes {
     public static let shared = ServiceVotes()
-    public static let apiKey: String = ""
+    public static var apiKey: String = ""
 
     private init() {}
 
