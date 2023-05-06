@@ -72,6 +72,6 @@ public struct FeaturesList: View {
 
 struct FeaturesList_Previews: PreviewProvider {
     static var previews: some View {
-        FeaturesList(appCode: "1", userID: "Marcelo")
+        FeaturesList(appCode: "1", userID: "1")
     }
 }

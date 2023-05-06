@@ -6,13 +6,13 @@
 //
 
 public struct Feature {
-    let id: String
-    let name: String
-    let description: String
-    let notes: [String]
-    let appCode: String
+    public let id: String
+    public let name: String
+    public let description: String
+    public let notes: [String]
+    public let appCode: String
     
-    init?(record: [String: Any]) {
+    public init?(record: [String: Any]) {
         guard let id = record["id"] as? String,
               let fields = record["fields"] as? [String: Any],
               let name = fields["featureName"] as? String,
