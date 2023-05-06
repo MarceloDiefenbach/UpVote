@@ -13,6 +13,12 @@ public struct FeaturesList: View {
     @State var allFeatures: [Feature] = []
     @State var selectedFeature: Feature?
     
+    public init(showingConfirmation: Bool = false, allFeatures: [Feature], selectedFeature: Feature? = nil) {
+        self.showingConfirmation = showingConfirmation
+        self.allFeatures = allFeatures
+        self.selectedFeature = selectedFeature
+    }
+    
     public var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
