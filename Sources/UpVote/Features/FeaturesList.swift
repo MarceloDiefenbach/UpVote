@@ -12,11 +12,12 @@ public struct FeaturesList: View {
     @State var showingConfirmation = false
     @State var allFeatures: [Feature] = []
     @State var selectedFeature: Feature?
+    @State var appCode: String
     
-    public init(showingConfirmation: Bool = false, allFeatures: [Feature], selectedFeature: Feature? = nil) {
-        self.showingConfirmation = showingConfirmation
-        self.allFeatures = allFeatures
-        self.selectedFeature = selectedFeature
+    public init(appCode: String) {
+        self.appCode = appCode
+        self.showingConfirmation = false
+        self.allFeatures = []
     }
     
     public var body: some View {
@@ -55,7 +56,7 @@ public struct FeaturesList: View {
                 .navigationTitle("Features vote")
             }
         }.onAppear(){
-            ServiceVotes.shared.getFeatures(appCode: "1") { (value, error) in
+            ServiceVotes.shared.getFeatures(appCode: self.appCode) { (value, error) in
                 if let error = error {
                     print("Error: \(error.localizedDescription)")
                 } else if let features = value {
@@ -71,6 +72,6 @@ public struct FeaturesList: View {
 
 struct FeaturesList_Previews: PreviewProvider {
     static var previews: some View {
-        FeaturesList(allFeatures: [])
+        FeaturesList(appCode: "1")
     }
 }
