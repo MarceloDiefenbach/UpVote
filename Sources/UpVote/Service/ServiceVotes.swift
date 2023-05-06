@@ -8,8 +8,8 @@
 import Foundation
 
 public class ServiceVotes {
-    static let shared = ServiceVotes()
-    static let apiKey: String = ""
+    public static let shared = ServiceVotes()
+    public static let apiKey: String = ""
 
     private init() {}
 
