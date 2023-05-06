@@ -5,7 +5,7 @@
 //  Created by Marcelo Diefenbach on 04/05/23.
 //
 
-struct Feature {
+public struct Feature {
     let id: String
     let name: String
     let description: String

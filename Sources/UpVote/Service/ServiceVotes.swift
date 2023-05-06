@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ServiceVotes {
+public class ServiceVotes {
     static let shared = ServiceVotes()
 
     private init() {}
