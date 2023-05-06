@@ -12,10 +12,8 @@ public struct FeaturesList: View {
     @State var showingConfirmation = false
     @State var allFeatures: [Feature] = []
     @State var selectedFeature: Feature?
-    @State var appCode: String
     
-    public init(appCode: String) {
-        self.appCode = appCode
+    public init() {
         self.showingConfirmation = false
         self.allFeatures = []
     }
@@ -31,20 +29,18 @@ public struct FeaturesList: View {
                                 featureaName: feature.name,
                                 featureaDescription: feature.description,
                                 voteCount: feature.notes.count
-                            ).onTapGesture {
+                            )
+                            .onTapGesture {
                                 selectedFeature = feature
                                 showingConfirmation = true
-                                print(selectedFeature)
                             }
                             .sheet(isPresented: $showingConfirmation) {
                                 if #available(iOS 16.0, *) {
                                     ConfirmModalSheet(title: feature.name, description: feature.description, onConfirm: {
-                                        print(selectedFeature)
                                     }, isPresented: $showingConfirmation)
                                     .presentationDetents([.medium, .large])
                                 } else {
                                     ConfirmModalSheet(title: feature.name, description: feature.description, onConfirm: {
-                                        print(selectedFeature)
                                     }, isPresented: $showingConfirmation)
                                 }
 
@@ -56,7 +52,7 @@ public struct FeaturesList: View {
                 .navigationTitle("Features vote")
             }
         }.onAppear(){
-            ServiceVotes.shared.getFeatures(appCode: self.appCode) { (value, error) in
+            ServiceVotes.shared.getFeatures() { (value, error) in
                 if let error = error {
                     print("Error: \(error.localizedDescription)")
                 } else if let features = value {
@@ -72,6 +68,6 @@ public struct FeaturesList: View {
 
 struct FeaturesList_Previews: PreviewProvider {
     static var previews: some View {
-        FeaturesList(appCode: "1")
+        FeaturesList()
     }
 }
