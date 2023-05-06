@@ -9,13 +9,11 @@ import Foundation
 
 public class ServiceVotes {
     public static let shared = ServiceVotes()
-    public var userID: String = "1"
-    public var appCode: String = "1"
 
     private init() {}
 
-    func getFeatures(completion: @escaping ([Feature]?, Error?) -> Void) {
-        guard let url = URL(string: "http://127.0.0.1:5000/airtable?userID=\(userID)&appCode=\(self.appCode)") else {
+    func getFeatures( appCode: String, userID: String, completion: @escaping ([Feature]?, Error?) -> Void) {
+        guard let url = URL(string: "http://127.0.0.1:5000/airtable?userID=\(userID)&appCode=\(appCode)") else {
             completion(nil, NSError(domain: "Invalid URL", code: -1, userInfo: nil))
             return
         }
