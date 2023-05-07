@@ -37,6 +37,7 @@ public struct FeaturesList: View {
                             .onTapGesture {
                                 selectedFeature = feature
                                 showingConfirmation = true
+                                ServiceVotes.shared.setVote(features: [feature])
                             }
                             .sheet(isPresented: $showingConfirmation) {
                                 if #available(iOS 16.0, *) {
