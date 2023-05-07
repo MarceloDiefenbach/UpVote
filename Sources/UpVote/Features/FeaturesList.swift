@@ -32,7 +32,7 @@ public struct FeaturesList: View {
                             FeaturesListIten(
                                 featureaName: feature.name,
                                 featureaDescription: feature.description,
-                                voteCount: feature.notes.count
+                                voteCount: feature.userIdVotes.count
                             )
                             .onTapGesture {
                                 selectedFeature = feature
