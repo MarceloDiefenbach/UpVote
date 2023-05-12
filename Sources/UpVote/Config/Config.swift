@@ -14,7 +14,7 @@ public class UpVoteConfig {
     
     //MARK: - logic
     public var appCode: String = ""
-    public var userID: String = "
+    public var userID: String = ""
     
     //MARK: - Colors
     
