@@ -24,7 +24,7 @@ struct ConfirmModalSheet: View {
                 Spacer()
                 
                 VStack {
-                    Text("Confirm your vote")
+                    Text(UpVoteConfig.shared.confirmTitleModal)
                         .font(.DesignSystem.largeTitleBold)
                         .padding(.top, 24)
                         .padding(.bottom, 32)
@@ -52,12 +52,12 @@ struct ConfirmModalSheet: View {
                     Spacer()
                     
                     HStack {
-                        UVButton(title: "Cancel", iconSFSymbols: "", style: .secondary, action: {
+                        UVButton(title: UpVoteConfig.shared.cancelButtonLabel, iconSFSymbols: "", style: .secondary, action: {
                             isPresented = false
                         })
                         .padding(.trailing, 2)
                         
-                        UVButton(title: "Confirm", iconSFSymbols: "", style: .primary, action: {
+                        UVButton(title: UpVoteConfig.shared.confirmButtonLabel, iconSFSymbols: "", style: .primary, action: {
                             onConfirm()
                             isPresented = false
                         })

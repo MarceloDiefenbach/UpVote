@@ -20,8 +20,8 @@ class FeaturesListViewModel: ObservableObject {
     @Published var allFeatures: [Feature] = []
     @Published var selectedFeature: Int?
     
-    func getFeatures(appCode: String, userID: String) {
-        ServiceVotes.shared.getFeatures(appCode: appCode, userID: userID) { (value, error) in
+    func getFeatures() {
+        ServiceVotes.shared.getFeatures() { (value, error) in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             } else if let features = value {

@@ -11,12 +11,10 @@ public struct FeaturesList: View {
     
     @StateObject var viewModel = FeaturesListViewModel()
     
-    @State var appCode: String
-    @State var userID: String
+    @State var showingConfirmation: Bool = false
     
-    public init(appCode: String, userID: String) {
-        self.appCode = appCode
-        self.userID = userID
+    public init() {
+        
     }
     
     public var body: some View {
@@ -29,48 +27,51 @@ public struct FeaturesList: View {
                             FeaturesListIten(
                                 featureaName: feature.name,
                                 featureaDescription: feature.description,
-                                voteCount: feature.userIdVotes.count,
-                                alreadyVoted: feature.userIdVotes.contains(self.userID) == true ? true : false
+                                voteCount: feature.userIdVotes.count-1,
+                                alreadyVoted: feature.userIdVotes.contains(ServiceVotes.shared.userID) == true ? true : false
                             )
                             .onTapGesture {
                                 viewModel.selectedFeature = index
-                                if !feature.userIdVotes.contains(self.userID) {
+                                if !feature.userIdVotes.contains(ServiceVotes.shared.userID) {
+                                    showingConfirmation = true
                                 }
                             }
                         }
                     }
                     .padding(.horizontal)
                 }
-                .navigationTitle("Features to vote")
+                .navigationTitle(UpVoteConfig.shared.listTitle)
             }
-            if viewModel.showingConfirmation {
+            if showingConfirmation {
                 ConfirmModalSheet(
                     title: self.viewModel.allFeatures[viewModel.selectedFeature!].name,
                     description: self.viewModel.allFeatures[viewModel.selectedFeature!].description,
                     onConfirm: {
-                        self.viewModel.allFeatures[viewModel.selectedFeature!].userIdVotes.append(self.userID)
+                        self.viewModel.allFeatures[viewModel.selectedFeature!].userIdVotes.append(ServiceVotes.shared.userID)
                         ServiceVotes.shared.sendVoteToAPI(
                             featureID: self.viewModel.allFeatures[viewModel.selectedFeature!].id,
-                            userIdVote: self.userID,
+                            userIdVote: ServiceVotes.shared.userID,
                             completion: { result, error in
                                 if let result = result {
-                                    print(result)
+                                    viewModel.getFeatures()
                                 } else {
                                     print(error!)
                                 }
                             }
                         )
                     },
-                    isPresented: $viewModel.showingConfirmation)
+                    isPresented: $showingConfirmation)
             }
         }.onAppear(){
-            viewModel.getFeatures(appCode: self.appCode, userID: self.userID)
+            ServiceVotes.shared.appCode = "reclOOpdQTZpAZZik"
+            ServiceVotes.shared.userID = "Marcelo"
+            viewModel.getFeatures()
         }
     }
 }
 
 struct FeaturesList_Previews: PreviewProvider {
     static var previews: some View {
-        FeaturesList(appCode: "1", userID: "Marcelo")
+        FeaturesList()
     }
 }

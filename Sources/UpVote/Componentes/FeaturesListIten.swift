@@ -21,13 +21,13 @@ public struct FeaturesListIten: View {
                 VStack(alignment: .leading) {
                     if alreadyVoted {
                         HStack {
-                            Text("Voted")
+                            Text(UpVoteConfig.shared.alreadyVoteLabel)
                                 .font(.DesignSystem.normalBold)
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
-                                .foregroundColor(DesignConfig.shared.white)
+                                .foregroundColor(UpVoteConfig.shared.white)
                         }
-                        .background(DesignConfig.shared.primaryColor)
+                        .background(UpVoteConfig.shared.primaryColor)
                         .cornerRadius(4)
                     }
                     Text(featureaName)
@@ -35,13 +35,13 @@ public struct FeaturesListIten: View {
                         .padding(.bottom, 2)
                         .multilineTextAlignment(.leading)
                         .lineLimit(2)
-                        .foregroundColor(DesignConfig.shared.textColor)
+                        .foregroundColor(UpVoteConfig.shared.textColor)
                     if !alreadyVoted {
                         Text(featureaDescription)
                             .font(.DesignSystem.smalRegular)
                             .multilineTextAlignment(.leading)
                             .lineLimit(2)
-                            .foregroundColor(DesignConfig.shared.textColor)
+                            .foregroundColor(UpVoteConfig.shared.textColor)
                     }
                 }
                 .padding(.leading, 24)
@@ -51,10 +51,10 @@ public struct FeaturesListIten: View {
                 VStack {
                     Text("\(voteCount)")
                         .font(.DesignSystem.largeTitleBold)
-                        .foregroundColor(DesignConfig.shared.textColor)
-                    Text("votes")
+                        .foregroundColor(UpVoteConfig.shared.textColor)
+                    Text(UpVoteConfig.shared.votesLabel)
                         .font(.DesignSystem.smalRegular)
-                        .foregroundColor(DesignConfig.shared.textColor)
+                        .foregroundColor(UpVoteConfig.shared.textColor)
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 16)
@@ -64,7 +64,7 @@ public struct FeaturesListIten: View {
                 .padding(.leading, 32)
                 .padding(.vertical, 16)
             }
-            .background(DesignConfig.shared.backgroundColor)
+            .background(UpVoteConfig.shared.backgroundColor)
             .cornerRadius(16)
         }
     }

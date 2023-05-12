@@ -9,13 +9,15 @@ import Foundation
 
 public class ServiceVotes {
     
-    private let base_url: String = "http://127.0.0.1:5000"
-    
     public static let shared = ServiceVotes()
+    
+    private let base_url: String = "https://gpt-treinador.herokuapp.com/"
+    var appCode: String = ""
+    var userID: String = ""
 
     private init() {}
 
-    func getFeatures(appCode: String, userID: String, completion: @escaping ([Feature]?, Error?) -> Void) {
+    func getFeatures(completion: @escaping ([Feature]?, Error?) -> Void) {
         guard let url = URL(string: "\(base_url)/getFeatures?appCode=\(appCode)") else {
             completion(nil, NSError(domain: "Invalid URL", code: -1, userInfo: nil))
             return
