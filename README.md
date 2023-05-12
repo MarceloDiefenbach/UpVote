@@ -21,7 +21,7 @@ UpVoteConfig.shared.appcode("your-app-code")
 UpVoteConfig.shared.userID("user-ID")
 ```
 
-3. Done! Now you can just present the view controller.
+3. Done! Now you can just use in your app
 ```swift
 
 // SwiftUI
