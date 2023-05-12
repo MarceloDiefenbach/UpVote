@@ -63,8 +63,6 @@ public struct FeaturesList: View {
                     isPresented: $showingConfirmation)
             }
         }.onAppear(){
-            ServiceVotes.shared.appCode = "reclOOpdQTZpAZZik"
-            ServiceVotes.shared.userID = "Marcelo"
             viewModel.getFeatures()
         }
     }
