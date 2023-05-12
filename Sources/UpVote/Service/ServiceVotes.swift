@@ -12,8 +12,8 @@ public class ServiceVotes {
     public static let shared = ServiceVotes()
     
     private let base_url: String = "https://gpt-treinador.herokuapp.com/"
-    public var appCode: String = ""
-    public var userID: String = ""
+    var appCode: String = UpVoteConfig.shared.appCode
+    var userID: String = UpVoteConfig.shared.userID
 
     private init() {}
 
