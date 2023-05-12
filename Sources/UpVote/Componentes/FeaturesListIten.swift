@@ -12,21 +12,37 @@ public struct FeaturesListIten: View {
     @State var featureaName: String = "Request new products directly"
     @State var featureaDescription: String = "Feature description"
     @State var voteCount: Int = 0
+    @State var alreadyVoted: Bool = true
     
     public var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
             HStack {
                 VStack(alignment: .leading) {
+                    if alreadyVoted {
+                        HStack {
+                            Text("Voted")
+                                .font(.DesignSystem.normalBold)
+                                .padding(.vertical, 2)
+                                .padding(.horizontal, 4)
+                                .foregroundColor(DesignConfig.shared.white)
+                        }
+                        .background(DesignConfig.shared.primaryColor)
+                        .cornerRadius(4)
+                    }
                     Text(featureaName)
-                        .font(.DesignSystem.normalSemiBold)
+                        .font(.DesignSystem.normalBold)
                         .padding(.bottom, 2)
                         .multilineTextAlignment(.leading)
                         .lineLimit(2)
-                    Text(featureaDescription)
-                        .font(.DesignSystem.smalRegular)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
+                        .foregroundColor(DesignConfig.shared.textColor)
+                    if !alreadyVoted {
+                        Text(featureaDescription)
+                            .font(.DesignSystem.smalRegular)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
+                            .foregroundColor(DesignConfig.shared.textColor)
+                    }
                 }
                 .padding(.leading, 24)
                 .padding(.top, 24)
@@ -35,8 +51,10 @@ public struct FeaturesListIten: View {
                 VStack {
                     Text("\(voteCount)")
                         .font(.DesignSystem.largeTitleBold)
+                        .foregroundColor(DesignConfig.shared.textColor)
                     Text("votes")
                         .font(.DesignSystem.smalRegular)
+                        .foregroundColor(DesignConfig.shared.textColor)
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 16)
@@ -46,7 +64,7 @@ public struct FeaturesListIten: View {
                 .padding(.leading, 32)
                 .padding(.vertical, 16)
             }
-            .background(.black.opacity(0.03))
+            .background(DesignConfig.shared.backgroundColor)
             .cornerRadius(16)
         }
     }

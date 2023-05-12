@@ -9,15 +9,12 @@ import SwiftUI
 
 public struct FeaturesList: View {
     
-    @State var showingConfirmation = false
-    @State var allFeatures: [Feature] = []
-    @State var selectedFeature: Feature?
+    @StateObject var viewModel = FeaturesListViewModel()
+    
     @State var appCode: String
     @State var userID: String
     
     public init(appCode: String, userID: String) {
-        self.showingConfirmation = false
-        self.allFeatures = []
         self.appCode = appCode
         self.userID = userID
     }
@@ -28,51 +25,52 @@ public struct FeaturesList: View {
             NavigationView {
                 ScrollView {
                     VStack {
-                        ForEach(allFeatures, id: \.id) { feature in
+                        ForEach(Array(viewModel.allFeatures.enumerated()), id: \.element.id) { index, feature in
                             FeaturesListIten(
                                 featureaName: feature.name,
                                 featureaDescription: feature.description,
-                                voteCount: feature.userIdVotes.count
+                                voteCount: feature.userIdVotes.count,
+                                alreadyVoted: feature.userIdVotes.contains(self.userID) == true ? true : false
                             )
                             .onTapGesture {
-                                selectedFeature = feature
-                                showingConfirmation = true
-                                ServiceVotes.shared.setVote(features: [feature])
-                            }
-                            .sheet(isPresented: $showingConfirmation) {
-                                if #available(iOS 16.0, *) {
-                                    ConfirmModalSheet(title: feature.name, description: feature.description, onConfirm: {
-                                    }, isPresented: $showingConfirmation)
-                                    .presentationDetents([.medium, .large])
-                                } else {
-                                    ConfirmModalSheet(title: feature.name, description: feature.description, onConfirm: {
-                                    }, isPresented: $showingConfirmation)
+                                viewModel.selectedFeature = index
+                                if !feature.userIdVotes.contains(self.userID) {
                                 }
-
                             }
                         }
                     }
                     .padding(.horizontal)
                 }
-                .navigationTitle("Features vote")
+                .navigationTitle("Features to vote")
+            }
+            if viewModel.showingConfirmation {
+                ConfirmModalSheet(
+                    title: self.viewModel.allFeatures[viewModel.selectedFeature!].name,
+                    description: self.viewModel.allFeatures[viewModel.selectedFeature!].description,
+                    onConfirm: {
+                        self.viewModel.allFeatures[viewModel.selectedFeature!].userIdVotes.append(self.userID)
+                        ServiceVotes.shared.sendVoteToAPI(
+                            featureID: self.viewModel.allFeatures[viewModel.selectedFeature!].id,
+                            userIdVote: self.userID,
+                            completion: { result, error in
+                                if let result = result {
+                                    print(result)
+                                } else {
+                                    print(error!)
+                                }
+                            }
+                        )
+                    },
+                    isPresented: $viewModel.showingConfirmation)
             }
         }.onAppear(){
-            ServiceVotes.shared.getFeatures(appCode: self.appCode, userID: self.userID) { (value, error) in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                } else if let features = value {
-                    print("Features: \(features)")
-                        allFeatures = features
-                } else {
-                    print("Unknown error occurred")
-                }
-            }
+            viewModel.getFeatures(appCode: self.appCode, userID: self.userID)
         }
     }
 }
 
 struct FeaturesList_Previews: PreviewProvider {
     static var previews: some View {
-        FeaturesList(appCode: "1", userID: "1")
+        FeaturesList(appCode: "1", userID: "Marcelo")
     }
 }

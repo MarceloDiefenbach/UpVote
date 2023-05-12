@@ -16,39 +16,60 @@ struct ConfirmModalSheet: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        VStack {
-            Text("Confirm your vote")
-                .font(.DesignSystem.largeTitleBold)
-                .padding(.top, 40)
-                .padding(.bottom, 40)
-            
+        ZStack {
+            Color.black.opacity(0.2).ignoresSafeArea()
             VStack {
-                Text(title)
-                    .font(.DesignSystem.titleBold)
-                    .padding(.bottom, 4)
-                Text(description)
-                    .font(.DesignSystem.normalRegular)
-            }
-            .padding(.vertical, 32)
-            .frame(width: UIScreen.main.bounds.width*0.9)
-            .background(.black.opacity(0.04))
-            .cornerRadius(16)
-            
-            Spacer()
-            
-            HStack {
-                UVButton(title: "Cancel", iconSFSymbols: "", style: .secondary, action: {
-                    isPresented = false
-                })
-                .padding(.trailing, 2)
+                Spacer()
+                Spacer()
+                Spacer()
                 
-                UVButton(title: "Confirm", iconSFSymbols: "", style: .primary, action: {
-                    onConfirm()
-                    isPresented = false
-                })
+                VStack {
+                    Text("Confirm your vote")
+                        .font(.DesignSystem.largeTitleBold)
+                        .padding(.top, 24)
+                        .padding(.bottom, 32)
+                    
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text(title)
+                                .multilineTextAlignment(.center)
+                                .font(.DesignSystem.titleBold)
+                                .padding(.bottom, 4)
+                                .lineLimit(3)
+                            Text(description)
+                                .multilineTextAlignment(.center)
+                                .font(.DesignSystem.normalRegular)
+                                .lineLimit(3)
+                        }
+                        Spacer()
+                    }
+                    .padding(.vertical, 32)
+                    .padding(.horizontal, 32)
+                    .background(.black.opacity(0.04))
+                    .cornerRadius(16)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        UVButton(title: "Cancel", iconSFSymbols: "", style: .secondary, action: {
+                            isPresented = false
+                        })
+                        .padding(.trailing, 2)
+                        
+                        UVButton(title: "Confirm", iconSFSymbols: "", style: .primary, action: {
+                            onConfirm()
+                            isPresented = false
+                        })
+                    }
+                }
+                .padding(.all)
+                .frame(height: UIScreen.main.bounds.height*0.5)
+                .background(.white)
+                .cornerRadius(16)
+                .padding(.all)
             }
-            .padding(.horizontal)
+            .padding(.vertical)
         }
-        .padding(.vertical)
     }
 }
