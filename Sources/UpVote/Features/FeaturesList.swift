@@ -27,14 +27,12 @@ public struct FeaturesList: View {
                             FeaturesListIten(
                                 featureaName: feature.name,
                                 featureaDescription: feature.description,
-                                voteCount: feature.userIdVotes.count-1,
-                                alreadyVoted: feature.userIdVotes.contains(ServiceVotes.shared.userID) == true ? true : false
+                                voteCount: feature.votes.count,
+                                alreadyVoted: feature.iVoteThis
                             )
                             .onTapGesture {
                                 viewModel.selectedFeature = index
-                                if !feature.userIdVotes.contains(ServiceVotes.shared.userID) {
-                                    showingConfirmation = true
-                                }
+                                showingConfirmation = true
                             }
                         }
                     }
@@ -47,12 +45,10 @@ public struct FeaturesList: View {
                     title: self.viewModel.allFeatures[viewModel.selectedFeature!].name,
                     description: self.viewModel.allFeatures[viewModel.selectedFeature!].description,
                     onConfirm: {
-                        self.viewModel.allFeatures[viewModel.selectedFeature!].userIdVotes.append(ServiceVotes.shared.userID)
                         ServiceVotes.shared.sendVoteToAPI(
                             featureID: self.viewModel.allFeatures[viewModel.selectedFeature!].id,
-                            userIdVote: ServiceVotes.shared.userID,
                             completion: { result, error in
-                                if let result = result {
+                                if result != nil {
                                     viewModel.getFeatures()
                                 } else {
                                     print(error!)
@@ -63,6 +59,8 @@ public struct FeaturesList: View {
                     isPresented: $showingConfirmation)
             }
         }.onAppear(){
+            UpVoteConfig.shared.appCode = "reclOOpdQTZpAZZik"
+            UpVoteConfig.shared.userID = "Marcelo"
             viewModel.getFeatures()
         }
     }

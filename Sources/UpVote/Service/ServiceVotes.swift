@@ -11,7 +11,8 @@ public class ServiceVotes {
     
     public static let shared = ServiceVotes()
     
-    private let base_url: String = "https://gpt-treinador.herokuapp.com/"
+//    private let base_url: String = "https://gpt-treinador.herokuapp.com/"
+    private let base_url: String = "http://127.0.0.1:5000/"
     var appCode: String = UpVoteConfig.shared.appCode
     var userID: String = UpVoteConfig.shared.userID
 
@@ -33,21 +34,36 @@ public class ServiceVotes {
                 completion(nil, NSError(domain: "No data returned", code: -1, userInfo: nil))
                 return
             }
-            
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                    let records = json["records"] as? [[String: Any]] {
+                    print(records)
                     let features = records.compactMap { record -> Feature? in
                         guard let id = record["id"] as? String,
                               let fields = record["fields"] as? [String: Any],
                               let name = fields["featureName"] as? String,
                               let description = fields["featureDescription"] as? String,
-                              let userIdVotes = fields["userIdVotes"] as? [String],
+                              let votesData = fields["votes"] as? [[String: Any]],  // Alterado para [[String: Any]]
                               let appCode = fields["appCode"] as? String else {
                             return nil
                         }
-
-                        return Feature(id: id, name: name, description: description, userIdVotes: userIdVotes, appCode: appCode)
+                        
+                        var allVotes: [Vote] = []
+                        
+                        for voteData in votesData {
+                            if let voteFields = voteData["fields"] as? [String: Any],
+                               let voteID = voteData["id"] as? String,
+                               let voteCreatedTime = voteData["createdTime"] as? String,
+                               let userID = voteFields["userID"] as? String,
+                               let featureID = voteFields["featureID"] as? String {
+                                
+                                let vote = Vote(id: voteID, createdTime: voteCreatedTime, appCode: appCode, userID: userID, featureID: featureID)
+                                allVotes.append(vote)
+                            }
+                        }
+                        let hasVoteWithUserIDABC = allVotes.contains { $0.userID == self.userID }
+                        
+                        return Feature(id: id, name: name, description: description, votes: allVotes, appCode: appCode, iVoteThis: hasVoteWithUserIDABC)
                     }
                     completion(features, nil)
                 } else {
@@ -62,51 +78,44 @@ public class ServiceVotes {
     }
 
 
-    func sendVoteToAPI(featureID: String, userIdVote: String, completion: @escaping ([Feature]?, Error?) -> Void) {
+    func sendVoteToAPI(featureID: String, completion: @escaping ([Feature]?, Error?) -> Void) {
         let url = URL(string: "\(base_url)/vote")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let params: [String: Any] = ["featureID": featureID, "userIdVote": userIdVote]
-        request.httpBody = try! JSONSerialization.data(withJSONObject: params, options: [])
+        let parameters: [String: Any] = [
+            "appCode": self.appCode,
+            "userID": self.userID,
+            "featureID": featureID
+        ]
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print("Error sending vote: \(error?.localizedDescription ?? "Unknown error")")
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            print("Error creating JSON data: \(error)")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error)")
                 return
             }
             
-            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                print("Response from server: \(responseJSON)")
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("Invalid response")
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                print("Vote created successfully")
             } else {
-                print("Error parsing server response")
+                print("Failed to create vote. Status code: \(httpResponse.statusCode)")
             }
         }
+        
         task.resume()
     }
-}
-
-func generateJSON(from features: [Feature]) -> String? {
-    let records = features.map { feature in
-        return [
-            "id": feature.id,
-            "fields": [
-                "appCode": feature.appCode,
-                "Notes": feature.userIdVotes,
-                "featureName": feature.name,
-                "featureDescription": feature.description
-            ]
-        ]
-    }
-    
-    let jsonDictionary = ["records": records]
-    
-    guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonDictionary, options: []),
-          let jsonString = String(data: jsonData, encoding: .utf8) else {
-        return nil
-    }
-    
-    return jsonString
 }
 
